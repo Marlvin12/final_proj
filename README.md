@@ -1,1 +1,3 @@
-# bugbuster-s---SENIOR-PROJECT
+# bugbuster
+SENIOR-PROJECT
+
