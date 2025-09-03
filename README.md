@@ -4,6 +4,11 @@ Students who want to start or grow a business lack a practical, guided way to as
 
 ---
 
+
+<img width="3210" height="2910" alt="diagram-export-9-3-2025-4_19_00-PM" src="https://github.com/user-attachments/assets/f8a1b295-e96f-4f34-ad63-c5c45286128c" />
+
+
+
 # 4-Week Development Plan (MVP)
 
 ## Week 1 — Foundations & Setup
