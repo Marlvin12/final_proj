@@ -12,7 +12,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
-  { label: 'Services', href: '/services' },
+  { label: 'Dashboard', href: '/dashboard' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -33,7 +33,7 @@ export default function TopNavbar() {
             onMouseEnter={() => setIsLogoHovered(true)}
             onMouseLeave={() => setIsLogoHovered(false)}
           >
-            YourLogo
+            Entrepreneurial Hub
           </Link>
 
           {/* Desktop Navigation */}
