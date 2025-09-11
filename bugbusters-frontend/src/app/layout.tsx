@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bug Busters | Business Assessment Platform - Jackson State University",
-  description: "Evaluate your business's digital maturity with AI-powered assessments. Get personalized recommendations and resources to grow your business. A Jackson State University senior project.",
+  title: "Entrepreneurial Hub | Business Assessment Platform - Jackson State University",
+  description: "Evaluate your business's digital maturity with AI-powered assessments. Get personalized recommendations and resources to grow your entrepreneurial venture. A Jackson State University senior project.",
 };
 
 export default function RootLayout({

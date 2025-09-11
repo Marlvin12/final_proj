@@ -33,7 +33,7 @@ export default function TopNavbar() {
             onMouseEnter={() => setIsLogoHovered(true)}
             onMouseLeave={() => setIsLogoHovered(false)}
           >
-            Bug Busters
+            Entrepreneurial Hub
           </Link>
 
           {/* Desktop Navigation */}
