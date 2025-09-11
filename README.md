@@ -80,3 +80,15 @@ Students who want to start or grow a business lack a practical, guided way to as
 * Scores are reproducible for identical answers; exports download reliably.
 * Admin can view top readiness gaps and adoption counts.
 * No critical security issues in scans; staging passes manual checks.
+  
+current Progress:
+
+<img width="1470" height="883" alt="Screenshot 2025-09-11 at 10 34 15 AM" src="https://github.com/user-attachments/assets/58715195-d989-4a01-be37-188e269e31a1" />
+
+<img width="1470" height="876" alt="Screenshot 2025-09-11 at 10 34 29 AM" src="https://github.com/user-attachments/assets/e99a5021-160b-4d3f-833d-cb29581735a6" />
+
+<img width="1470" height="883" alt="Screenshot 2025-09-11 at 10 35 04 AM" src="https://github.com/user-attachments/assets/532ecca4-0548-4aaf-b726-ace2cf962b45" />
+
+
+<img width="1470" height="881" alt="Screenshot 2025-09-11 at 10 35 23 AM" src="https://github.com/user-attachments/assets/54215b28-d36a-48d7-8daf-9a4a7886665e" />
+
