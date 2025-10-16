@@ -6,8 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { ChartVisualizations } from "@/components/ChartVisualizations";
 import { VoiceAdvice } from "@/components/VoiceAdvice";
 import { saveQuestionnaireResponse } from "@/lib/database";
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import jsPDF from 'jspdf';
 
 function computeScore(params: URLSearchParams): { score: number; level: "low" | "medium" | "high" } {
   let total = 0;
@@ -376,7 +375,23 @@ export default function ResultsPage() {
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      const doc = new jsPDF();
+      // Dynamically import jspdf-autotable to ensure it loads properly
+      await import('jspdf-autotable');
+      
+      const doc = new jsPDF() as jsPDF & {
+        autoTable: (options: {
+          startY?: number;
+          head?: string[][];
+          body?: string[][];
+          theme?: string;
+          headStyles?: Record<string, unknown>;
+          styles?: Record<string, unknown>;
+          alternateRowStyles?: Record<string, unknown>;
+        }) => void;
+        lastAutoTable?: {
+          finalY: number;
+        };
+      };
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       let yPosition = 20;
@@ -488,10 +503,7 @@ export default function ResultsPage() {
         `${cat.percentage}%`
       ]);
 
-      (doc as typeof doc & { 
-        autoTable: (options: Record<string, unknown>) => void;
-        lastAutoTable?: { finalY: number };
-      }).autoTable({
+      doc.autoTable({
         startY: yPosition,
         head: [['Category', 'Score']],
         body: tableData,
@@ -510,7 +522,7 @@ export default function ResultsPage() {
         }
       });
 
-      const finalY = (doc as typeof doc & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? yPosition;
+      const finalY = doc.lastAutoTable?.finalY ?? yPosition;
       const adjustedY = finalY + 10;
 
       if (adjustedY > pageHeight - 30) {
