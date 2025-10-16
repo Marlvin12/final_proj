@@ -1,19 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const AGENT_ID = 'agent_4801k5a2j62bek08gqt2wacgx33s';
 
 export function ElevenLabsWidget() {
-  const [isEnabled, setIsEnabled] = useState(false);
-
   useEffect(() => {
     if (!AGENT_ID || AGENT_ID === 'agent_4801k5a2j62bek08gqt2wacgx33s') {
       console.warn('ElevenLabs widget: Agent ID not properly configured');
       return;
     }
-
-    setIsEnabled(true);
 
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
@@ -22,7 +18,6 @@ export function ElevenLabsWidget() {
     
     script.onerror = () => {
       console.error('Failed to load ElevenLabs widget script');
-      setIsEnabled(false);
     };
 
     script.onload = () => {
@@ -32,7 +27,6 @@ export function ElevenLabsWidget() {
         document.body.appendChild(widgetElement);
       } catch (error) {
         console.error('Error initializing ElevenLabs widget:', error);
-        setIsEnabled(false);
       }
     };
     

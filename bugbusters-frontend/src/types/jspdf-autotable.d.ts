@@ -3,13 +3,13 @@ declare module 'jspdf-autotable' {
 
   interface AutoTableOptions {
     startY?: number;
-    head?: any[][];
-    body?: any[][];
+    head?: string[][];
+    body?: string[][];
     theme?: 'striped' | 'grid' | 'plain';
-    headStyles?: any;
-    styles?: any;
-    alternateRowStyles?: any;
-    margin?: any;
+    headStyles?: Record<string, unknown>;
+    styles?: Record<string, unknown>;
+    alternateRowStyles?: Record<string, unknown>;
+    margin?: Record<string, unknown>;
     tableWidth?: string | number;
   }
 
@@ -18,7 +18,7 @@ declare module 'jspdf-autotable' {
 
 declare module 'jspdf' {
   interface jsPDF {
-    autoTable: (options: any) => jsPDF;
+    autoTable: (options: Record<string, unknown>) => jsPDF;
     lastAutoTable: {
       finalY: number;
     };

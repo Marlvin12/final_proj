@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 let requestCount = 0;
 let errorCount = 0;
@@ -36,7 +36,7 @@ function calculatePercentile(arr: number[], percentile: number): number {
   return sorted[index] || 0;
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   incrementRequestCount();
   
   const avgDuration = requestDurations.length > 0

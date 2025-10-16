@@ -18,6 +18,7 @@ export default function ThreeBackground({ variant = 'particles' }: ThreeBackgrou
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const container = containerRef.current;
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
@@ -36,7 +37,7 @@ export default function ThreeBackground({ variant = 'particles' }: ThreeBackgrou
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     if (variant === 'particles') {
@@ -168,8 +169,8 @@ export default function ThreeBackground({ variant = 'particles' }: ThreeBackgrou
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationId);
       
-      if (rendererRef.current && containerRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement);
+      if (rendererRef.current && container) {
+        container.removeChild(rendererRef.current.domElement);
         rendererRef.current.dispose();
       }
       
