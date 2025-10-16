@@ -6,8 +6,8 @@ const AGENT_ID = 'agent_4801k5a2j62bek08gqt2wacgx33s';
 
 export function ElevenLabsWidget() {
   useEffect(() => {
-    if (!AGENT_ID || AGENT_ID === 'agent_4801k5a2j62bek08gqt2wacgx33s') {
-      console.warn('ElevenLabs widget: Agent ID not properly configured');
+    if (!AGENT_ID) {
+      console.warn('ElevenLabs widget: Agent ID not configured');
       return;
     }
 
