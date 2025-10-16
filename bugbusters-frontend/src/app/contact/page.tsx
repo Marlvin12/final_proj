@@ -17,7 +17,7 @@ export default function ContactPage() {
                 </span>
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Have questions or feedback? We'd love to hear from you!
+                Have questions or feedback? We&apos;d love to hear from you!
               </p>
             </div>
 

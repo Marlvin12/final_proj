@@ -29,7 +29,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   The Entrepreneurial Hub is designed to help entrepreneurs at every stage of their journey. 
-                  Whether you're just starting with an idea or scaling your business, our AI-powered platform 
+                  Whether you&apos;re just starting with an idea or scaling your business, our AI-powered platform 
                   provides personalized insights, recommendations, and resources to help you succeed.
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-lg text-white/90 leading-relaxed">
                   This project represents the culmination of our studies and demonstrates our commitment to 
-                  using technology to solve real-world problems. We're proud to be part of the Jackson State 
+                  using technology to solve real-world problems. We&apos;re proud to be part of the Jackson State 
                   University community and grateful for the support of our professors and mentors.
                 </p>
               </div>
