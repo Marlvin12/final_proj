@@ -16,6 +16,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Entrepreneurial Hub | Business Assessment Platform - Jackson State University",
   description: "Evaluate your business's digital maturity with AI-powered assessments. Get personalized recommendations and resources to grow your entrepreneurial venture. A Jackson State University senior project.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  themeColor: "#10b981",
 };
 
 export default function RootLayout({

@@ -186,4 +186,23 @@ body {
 
 * {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 640px) {
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+}
+
+body {
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
 }

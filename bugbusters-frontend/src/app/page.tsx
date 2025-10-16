@@ -11,40 +11,41 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 translate-y-12 -translate-x-12 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         
-      <section className="relative px-6 lg:px-8 py-24 sm:py-32">
+      <section className="relative px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-8 animate-fade-in-down">
-            <div className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 px-4 py-2 text-sm font-medium text-emerald-800 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-slow border border-emerald-200">
-              <span className="mr-2 animate-pulse">🎓</span>
-              Jackson State University Senior Project
+          <div className="mb-6 sm:mb-8 animate-fade-in-down">
+            <div className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-emerald-800 mb-4 sm:mb-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-slow border border-emerald-200">
+              <span className="mr-1 sm:mr-2 animate-pulse">🎓</span>
+              <span className="hidden sm:inline">Jackson State University Senior Project</span>
+              <span className="sm:hidden">JSU Senior Project</span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl animate-fade-in-up">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-gray-900 animate-fade-in-up px-2">
             <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
               Entrepreneurial Hub
             </span>
             <br />
-            <span className="text-gray-800">Business Assessment Platform</span>
+            <span className="text-gray-800 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">Business Assessment Platform</span>
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-3xl mx-auto animate-fade-in animation-delay-200">
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-gray-600 max-w-3xl mx-auto animate-fade-in animation-delay-200 px-4">
             Evaluate your business&apos;s digital maturity with AI-powered assessments. Get personalized 
             recommendations, track your progress, and unlock resources to grow your entrepreneurial 
             venture with confidence.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6 animate-fade-in animation-delay-400">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 animate-fade-in animation-delay-400 px-4">
             <Link
               href="/dashboard"
-              className="group relative rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden"
+              className="w-full sm:w-auto group relative rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden text-center"
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-              <span className="relative flex items-center gap-2">
+              <span className="relative flex items-center justify-center gap-2">
                 Start Assessment
                 <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
               </span>
             </Link>
             <Link
               href="/about"
-              className="text-lg font-semibold leading-6 text-gray-900 hover:text-emerald-600 transition-all duration-300 group"
+              className="w-full sm:w-auto text-base sm:text-lg font-semibold leading-6 text-gray-900 hover:text-emerald-600 transition-all duration-300 group text-center"
             >
               Learn more 
               <span className="inline-block group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true">→</span>
