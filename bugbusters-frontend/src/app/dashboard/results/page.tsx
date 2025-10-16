@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { ChartVisualizations } from "@/components/ChartVisualizations";
 import { VoiceAdvice } from "@/components/VoiceAdvice";
 import { saveQuestionnaireResponse } from "@/lib/database";
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
 function computeScore(params: URLSearchParams): { score: number; level: "low" | "medium" | "high" } {
@@ -488,22 +488,10 @@ export default function ResultsPage() {
         `${cat.percentage}%`
       ]);
 
-      interface JsPDFWithAutoTable extends jsPDF {
-        autoTable: (options: {
-          startY?: number;
-          head?: string[][];
-          body?: string[][];
-          theme?: string;
-          headStyles?: Record<string, unknown>;
-          styles?: Record<string, unknown>;
-          alternateRowStyles?: Record<string, unknown>;
-        }) => jsPDF;
-        lastAutoTable: {
-          finalY: number;
-        };
-      }
-
-      (doc as JsPDFWithAutoTable).autoTable({
+      (doc as typeof doc & { 
+        autoTable: (options: Record<string, unknown>) => void;
+        lastAutoTable?: { finalY: number };
+      }).autoTable({
         startY: yPosition,
         head: [['Category', 'Score']],
         body: tableData,
@@ -522,9 +510,10 @@ export default function ResultsPage() {
         }
       });
 
-      const finalY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
+      const finalY = (doc as typeof doc & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? yPosition;
+      const adjustedY = finalY + 10;
 
-      if (finalY > pageHeight - 30) {
+      if (adjustedY > pageHeight - 30) {
         doc.addPage();
         doc.setFillColor(16, 185, 129);
         doc.rect(0, pageHeight - 25, pageWidth, 25, 'F');
