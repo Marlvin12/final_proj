@@ -1,0 +1,63 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'entrepreneurial-hub'
+    environment: 'production'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  # - "alerts.yml"
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          instance: 'prometheus'
+
+  # Next.js Application Metrics
+  - job_name: 'nextjs-app'
+    scrape_interval: 10s
+    metrics_path: '/api/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:3000']  # For Docker on Mac/Windows
+        # - targets: ['172.17.0.1:3000']          # For Docker on Linux
+        labels:
+          app: 'entrepreneurial-hub'
+          instance: 'nextjs-app'
+    # If running in production (Vercel), replace with:
+    # static_configs:
+    #   - targets: ['your-vercel-domain.vercel.app']
+    #     labels:
+    #       app: 'entrepreneurial-hub'
+    #       instance: 'production'
+
+  # Node Exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'server'
+
+  # Vercel Production (when deployed)
+  # Uncomment and update with your actual Vercel URL
+  # - job_name: 'nextjs-production'
+  #   scrape_interval: 30s
+  #   scheme: https
+  #   metrics_path: '/api/metrics'
+  #   static_configs:
+  #     - targets: ['final-proj-pi.vercel.app']
+  #       labels:
+  #         app: 'entrepreneurial-hub'
+  #         instance: 'production'
+  #         environment: 'vercel'
+

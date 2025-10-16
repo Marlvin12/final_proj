@@ -1,0 +1,18 @@
+# Prometheus data
+prometheus_data/
+
+# Grafana data
+grafana_data/
+
+# Docker volumes
+**/data/
+**/logs/
+
+# Environment files
+.env
+.env.local
+
+# Backup files
+*.bak
+*.backup
+
