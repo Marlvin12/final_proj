@@ -5,46 +5,59 @@ export default function Home() {
   return (
     <>
       <TopNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-100">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+        <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 w-96 h-96 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 translate-y-12 -translate-x-12 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        
       <section className="relative px-6 lg:px-8 py-24 sm:py-32">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-800 mb-6">
-              <span className="mr-2">🎓</span>
+          <div className="mb-8 animate-fade-in-down">
+            <div className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 px-4 py-2 text-sm font-medium text-emerald-800 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-slow border border-emerald-200">
+              <span className="mr-2 animate-pulse">🎓</span>
               Jackson State University Senior Project
             </div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            <span className="text-emerald-600">Entrepreneurial Hub</span>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl animate-fade-in-up">
+            <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
+              Entrepreneurial Hub
+            </span>
             <br />
-            Business Assessment Platform
+            <span className="text-gray-800">Business Assessment Platform</span>
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-3xl mx-auto">
-            Evaluate your business's digital maturity with AI-powered assessments. Get personalized 
+          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-3xl mx-auto animate-fade-in animation-delay-200">
+            Evaluate your business&apos;s digital maturity with AI-powered assessments. Get personalized 
             recommendations, track your progress, and unlock resources to grow your entrepreneurial 
             venture with confidence.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
+          <div className="mt-10 flex items-center justify-center gap-x-6 animate-fade-in animation-delay-400">
             <Link
               href="/dashboard"
-              className="rounded-md bg-emerald-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-200 transform hover:scale-105"
+              className="group relative rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden"
             >
-              Start Assessment
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              <span className="relative flex items-center gap-2">
+                Start Assessment
+                <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </span>
             </Link>
             <Link
               href="/about"
-              className="text-lg font-semibold leading-6 text-gray-900 hover:text-emerald-600 transition-colors duration-200"
+              className="text-lg font-semibold leading-6 text-gray-900 hover:text-emerald-600 transition-all duration-300 group"
             >
-              Learn more <span aria-hidden="true">→</span>
+              Learn more 
+              <span className="inline-block group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-blue-50/50"></div>
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
               Comprehensive Entrepreneurial Assessment
             </h2>
             <p className="mt-4 text-lg leading-8 text-gray-600">
@@ -54,10 +67,10 @@ export default function Home() {
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-              <div className="flex flex-col group hover:bg-gray-50 p-6 rounded-xl transition-all duration-300">
+              <div className="flex flex-col group hover:shadow-2xl hover:-translate-y-2 bg-white p-6 rounded-2xl transition-all duration-500 border-2 border-transparent hover:border-emerald-200 shadow-lg">
                 <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                  <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-bold text-lg">AI</span>
+                  <div className="h-14 w-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <span className="text-white font-bold text-xl">AI</span>
                   </div>
                   AI-Powered Questions
                 </dt>
@@ -68,10 +81,10 @@ export default function Home() {
                   </p>
                 </dd>
               </div>
-              <div className="flex flex-col group hover:bg-gray-50 p-6 rounded-xl transition-all duration-300">
+              <div className="flex flex-col group hover:shadow-2xl hover:-translate-y-2 bg-white p-6 rounded-2xl transition-all duration-500 border-2 border-transparent hover:border-blue-200 shadow-lg animation-delay-200">
                 <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                  <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-bold text-xl">📊</span>
+                  <div className="h-14 w-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <span className="text-white font-bold text-2xl">📊</span>
                   </div>
                   Smart Scoring System
                 </dt>
@@ -82,10 +95,10 @@ export default function Home() {
                   </p>
                 </dd>
               </div>
-              <div className="flex flex-col group hover:bg-gray-50 p-6 rounded-xl transition-all duration-300">
+              <div className="flex flex-col group hover:shadow-2xl hover:-translate-y-2 bg-white p-6 rounded-2xl transition-all duration-500 border-2 border-transparent hover:border-purple-200 shadow-lg animation-delay-400">
                 <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                  <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-bold text-xl">📈</span>
+                  <div className="h-14 w-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <span className="text-white font-bold text-2xl">📈</span>
                   </div>
                   Progress Tracking
                 </dt>
@@ -101,8 +114,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        </div>
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               How It Works
@@ -112,40 +129,45 @@ export default function Home() {
             </p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-4">
-              <div className="text-center group">
-                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+            <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-4 relative">
+              <div className="hidden lg:block absolute top-8 left-1/4 right-1/4 h-1 bg-gradient-to-r from-emerald-300 via-blue-300 via-purple-300 to-orange-300"></div>
+              
+              <div className="text-center group relative">
+                <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold text-2xl mb-6 group-hover:scale-125 group-hover:shadow-2xl transition-all duration-500 shadow-lg relative z-10">
                   1
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Up</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors duration-300">Sign Up</h3>
+                <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
                   Create your account and enter your entrepreneurial venture information
                 </p>
               </div>
-              <div className="text-center group">
-                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              
+              <div className="text-center group relative">
+                <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-2xl mb-6 group-hover:scale-125 group-hover:shadow-2xl transition-all duration-500 shadow-lg relative z-10">
                   2
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Assessment</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">Assessment</h3>
+                <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
                   Answer AI-generated questions tailored to your industry and business model
                 </p>
               </div>
-              <div className="text-center group">
-                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              
+              <div className="text-center group relative">
+                <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold text-2xl mb-6 group-hover:scale-125 group-hover:shadow-2xl transition-all duration-500 shadow-lg relative z-10">
                   3
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Results</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-300">Results</h3>
+                <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
                   Get your entrepreneurial readiness score and personalized recommendations
                 </p>
               </div>
-              <div className="text-center group">
-                <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              
+              <div className="text-center group relative">
+                <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-white font-bold text-2xl mb-6 group-hover:scale-125 group-hover:shadow-2xl transition-all duration-500 shadow-lg relative z-10">
                   4
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Grow</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors duration-300">Grow</h3>
+                <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
                   Access resources, mentorship opportunities, and track your progress over time
                 </p>
               </div>
@@ -154,28 +176,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-r from-emerald-600 to-blue-600 py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="relative bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzAgMi4yMS0xLjc5IDQtNCA0cy00LTEuNzktNC00IDEuNzktNCA0LTQgNCAxLjc5IDQgNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl mb-6 animate-fade-in-down">
               Ready to Launch Your Entrepreneurial Journey?
             </h2>
-            <p className="mt-6 text-lg leading-8 text-emerald-100">
+            <p className="mt-6 text-xl leading-8 text-white/90 animate-fade-in animation-delay-200">
               Join students and entrepreneurs who are using Entrepreneurial Hub to evaluate 
               and improve their business strategies with AI-powered insights and expert guidance.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
+            <div className="mt-10 flex items-center justify-center gap-x-6 animate-fade-in-up animation-delay-400">
               <Link
                 href="/dashboard"
-                className="rounded-md bg-white px-6 py-3 text-lg font-semibold text-emerald-600 shadow-lg hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-200 transform hover:scale-105"
+                className="group relative rounded-xl bg-white px-8 py-4 text-lg font-semibold text-emerald-600 shadow-2xl hover:shadow-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 overflow-hidden"
               >
-                Get Started Now
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center gap-2">
+                  Get Started Now
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </span>
               </Link>
               <Link
                 href="/contact"
-                className="text-lg font-semibold leading-6 text-white hover:text-emerald-100 transition-colors duration-200"
+                className="text-lg font-semibold leading-6 text-white hover:text-white/80 transition-all duration-300 group"
               >
-                Contact Us <span aria-hidden="true">→</span>
+                Contact Us 
+                <span className="inline-block group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
@@ -210,7 +238,7 @@ export default function Home() {
               </div>
               <div className="bg-gray-800 p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <div className="font-semibold text-pink-400">Programming Lead</div>
-                <div>Sa'Nya Griffin</div>
+                <div>Sa&apos;Nya Griffin</div>
               </div>
             </div>
             <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-400">

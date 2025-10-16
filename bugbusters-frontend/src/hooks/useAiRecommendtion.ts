@@ -1,11 +1,19 @@
-// src/hooks/useAIRecommendations.ts
 import { useState, useEffect } from 'react';
+
+type CategoryScore = {
+  name: string;
+  percentage: number;
+};
+
+type WeakestCategory = {
+  name: string;
+};
 
 interface UseAIRecommendationsProps {
   score: number;
   level: string;
-  categoryScores: any[];
-  weakest: any;
+  categoryScores: CategoryScore[];
+  weakest: WeakestCategory;
 }
 
 export function useAIRecommendations({ score, level, categoryScores, weakest }: UseAIRecommendationsProps) {

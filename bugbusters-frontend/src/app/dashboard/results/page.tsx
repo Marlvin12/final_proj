@@ -1,12 +1,16 @@
 "use client";
 
-import React, { useMemo,useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { ChartVisualizations } from "@/components/ChartVisualizations";
+import { VoiceAdvice } from "@/components/VoiceAdvice";
+import { saveQuestionnaireResponse } from "@/lib/database";
 
 function computeScore(params: URLSearchParams): { score: number; level: "low" | "medium" | "high" } {
   let total = 0;
   let count = 0;
-  params.forEach((v, k) => {
+  params.forEach((v) => {
     if (v === "yes") {
       total += 5;
       count += 1;
@@ -93,7 +97,7 @@ const computeCategoryScores = (params: URLSearchParams) => {
     }
   };
 
-  Object.entries(categories).forEach(([categoryName, category]) => {
+  Object.entries(categories).forEach(([, category]) => {
     category.questions.forEach(questionId => {
       const value = params.get(questionId);
       if (value === 'yes') {
@@ -131,8 +135,15 @@ const computeCategoryScores = (params: URLSearchParams) => {
 };
 
 // Generate personalized roadmap based on level and weakest categories
-const generateRoadmap = (level: "low" | "medium" | "high", weakest: any, categoryScores: any[]) => {
-  const weakCategories = categoryScores.filter(c => c.percentage < 60).sort((a, b) => a.percentage - b.percentage);
+type CategoryScore = {
+  name: string;
+  icon: string;
+  percentage: number;
+  score: number;
+  maxScore: number;
+};
+
+const generateRoadmap = (level: "low" | "medium" | "high", weakest: CategoryScore) => {
   
   if (level === "low") {
     return {
@@ -158,39 +169,58 @@ const generateRoadmap = (level: "low" | "medium" | "high", weakest: any, categor
 };
 
 // Curated resources mapped to categories
-const getCuratedResources = (weakest: any, categoryScores: any[]) => {
+type ResourceItem = {
+  title: string;
+  url: string;
+  description: string;
+  type: string;
+};
+
+const getCuratedResources = (weakest: CategoryScore, categoryScores: CategoryScore[]) => {
   const resourceMap = {
     'Market Validation': [
-      { title: 'Customer Interview Guide', url: '#', description: 'Step-by-step framework for conducting effective customer discovery interviews', type: 'PDF' },
-      { title: 'Market Research Template', url: '#', description: 'Comprehensive template for analyzing your target market', type: 'Template' },
-      { title: 'Value Proposition Canvas', url: 'https://www.strategyzer.com/canvas/value-proposition-canvas', description: 'Tool to design value propositions that customers want', type: 'Tool' }
+      { title: 'Customer Development Guide', url: 'https://steveblank.com/2014/06/28/customer-development-manifesto-reasons-for-the-revolution-part-1/', description: 'Steve Blank\'s comprehensive guide to customer discovery and validation', type: 'Article' },
+      { title: 'Y Combinator Startup School', url: 'https://www.startupschool.org/', description: 'Free online course covering market validation and startup fundamentals', type: 'Course' },
+      { title: 'Value Proposition Canvas', url: 'https://www.strategyzer.com/canvas/value-proposition-canvas', description: 'Tool to design value propositions that customers want', type: 'Tool' },
+      { title: 'The Mom Test', url: 'https://www.momtestbook.com/', description: 'How to talk to customers and learn if your business is a good idea', type: 'Book' }
     ],
     'Revenue Model': [
-      { title: 'Lean Financial Model Template', url: '#', description: 'Simple spreadsheet to build your financial projections', type: 'Template' },
-      { title: 'Pricing Strategy Guide', url: '#', description: 'How to price your product for profitability and growth', type: 'Guide' },
-      { title: 'Revenue Streams Worksheet', url: '#', description: 'Identify and evaluate potential revenue streams', type: 'Worksheet' }
+      { title: 'SBA Financial Planning Guide', url: 'https://www.sba.gov/business-guide/plan-your-business/write-your-business-plan', description: 'Small Business Administration guide to financial planning and projections', type: 'Guide' },
+      { title: 'Pricing Strategy Framework', url: 'https://review.firstround.com/the-price-is-right-essential-tips-for-nailing-your-pricing-strategy', description: 'First Round Review guide to pricing strategy and optimization', type: 'Guide' },
+      { title: 'Business Model Canvas', url: 'https://www.strategyzer.com/canvas/business-model-canvas', description: 'Strategic management template for developing business models', type: 'Tool' },
+      { title: 'SCORE Financial Templates', url: 'https://www.score.org/resource/financial-projections-template', description: 'Free financial projection templates from SCORE mentors', type: 'Template' }
     ],
     'Customer Acquisition': [
       { title: 'HubSpot Free CRM', url: 'https://www.hubspot.com/products/crm', description: 'Free customer relationship management software', type: 'Tool' },
-      { title: 'Growth Hacking Playbook', url: '#', description: 'Proven tactics for acquiring your first 1000 customers', type: 'Playbook' },
-      { title: 'Marketing Channel Matrix', url: '#', description: 'Evaluate and prioritize marketing channels for your business', type: 'Template' }
+      { title: 'Traction Book Resources', url: 'https://tractionbook.com/', description: '19 channels to get traction for your startup', type: 'Book' },
+      { title: 'First Round Review', url: 'https://review.firstround.com/topics/go-to-market', description: 'Go-to-market strategies from top startup founders', type: 'Articles' },
+      { title: 'Google Analytics Academy', url: 'https://analytics.google.com/analytics/academy/', description: 'Free courses on measuring and optimizing customer acquisition', type: 'Course' }
     ],
     'Team Readiness': [
-      { title: 'Co-founder Equity Split Calculator', url: '#', description: 'Fair framework for dividing equity among founders', type: 'Calculator' },
-      { title: 'Hiring Roadmap Template', url: '#', description: 'Plan your team growth strategically', type: 'Template' },
-      { title: 'Team Culture Guide', url: '#', description: 'Build a strong foundation for your startup culture', type: 'Guide' }
+      { title: 'Gust Equity Calculator', url: 'https://gust.com/launch/equity-calculator', description: 'Fair framework for dividing equity among founders and early employees', type: 'Calculator' },
+      { title: 'First Round Talent Resources', url: 'https://review.firstround.com/topics/hiring', description: 'Hiring best practices from successful startups', type: 'Articles' },
+      { title: 'Y Combinator Co-founder Guide', url: 'https://www.ycombinator.com/library/8g-how-to-find-the-right-co-founder', description: 'Finding and working with co-founders effectively', type: 'Guide' },
+      { title: 'Culture Amp Resources', url: 'https://www.cultureamp.com/blog', description: 'Building high-performing teams and strong culture', type: 'Blog' }
     ],
     'Operations & Processes': [
-      { title: 'SOP Template Library', url: '#', description: 'Standard operating procedure templates for common business processes', type: 'Templates' },
-      { title: 'Notion Playbook', url: 'https://www.notion.so/templates', description: 'Pre-built workspace templates for operations management', type: 'Tool' },
-      { title: 'Process Documentation Guide', url: '#', description: 'How to document and systematize your operations', type: 'Guide' }
+      { title: 'SBA Operations Guide', url: 'https://www.sba.gov/business-guide/manage-your-business', description: 'Comprehensive guide to managing and scaling business operations', type: 'Guide' },
+      { title: 'Notion Templates', url: 'https://www.notion.so/templates', description: 'Pre-built workspace templates for operations management', type: 'Tool' },
+      { title: 'Process Street', url: 'https://www.process.st/', description: 'Workflow and process management software for teams', type: 'Tool' },
+      { title: 'Lean Startup Principles', url: 'http://theleanstartup.com/principles', description: 'Build-measure-learn framework for efficient operations', type: 'Methodology' }
     ]
   };
 
   // Get resources for weakest categories (bottom 2)
   const weakCategories = categoryScores.filter(c => c.percentage < 60).sort((a, b) => a.percentage - b.percentage).slice(0, 2);
   
-  const resources: any[] = [];
+  type ResourceCategory = {
+    category: string;
+    icon: string;
+    percentage: number;
+    items: ResourceItem[];
+  };
+  
+  const resources: ResourceCategory[] = [];
   weakCategories.forEach(cat => {
     const catResources = resourceMap[cat.name as keyof typeof resourceMap] || [];
     resources.push({
@@ -305,13 +335,41 @@ const RadialGauge = ({ percentage, icon, name }: { percentage: number; icon: str
 export default function ResultsPage() {
   const params = useSearchParams();
   const router = useRouter();
+  const { userId } = useAuth();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const { score, level } = useMemo(() => computeScore(params), [params]);
   const { categoryScores, strongest, weakest } = useMemo(() => computeCategoryScores(params), [params]);
-  const roadmap = useMemo(() => generateRoadmap(level, weakest, categoryScores), [level, weakest, categoryScores]);
+  const roadmap = useMemo(() => generateRoadmap(level, weakest), [level, weakest]);
   const curatedResources = useMemo(() => getCuratedResources(weakest, categoryScores), [weakest, categoryScores]);
+  const advice = useMemo(() => adviceFor(level), [level]);
   const [viewMode, setViewMode] = useState<'bars' | 'radial'>('bars');
+
+  useEffect(() => {
+    const saveAssessment = async () => {
+      if (!userId || isSaved) return;
+
+      const answers: Record<string, string | number> = {};
+      params.forEach((value, key) => {
+        const numValue = Number(value);
+        answers[key] = isNaN(numValue) ? value : numValue;
+      });
+
+      const stage: 'Idea' | 'Research' | 'Planning' | 'Launch' | 'Scaling' = 
+        score < 30 ? 'Idea' : 
+        score < 50 ? 'Research' : 
+        score < 70 ? 'Planning' : 
+        score < 85 ? 'Launch' : 'Scaling';
+
+      const responseId = await saveQuestionnaireResponse(userId, answers, score, stage);
+      if (responseId) {
+        setIsSaved(true);
+      }
+    };
+
+    saveAssessment();
+  }, [userId, params, score, isSaved]);
 
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
@@ -408,6 +466,9 @@ export default function ResultsPage() {
         </div>
       </div>
 
+      {/* Voice Advice */}
+      <VoiceAdvice advice={advice.items} level={level} score={score} />
+
       {/* Personalized Action Roadmap */}
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
         <div className="flex items-center gap-2 mb-4">
@@ -429,6 +490,9 @@ export default function ResultsPage() {
           </div>
         </div>
       </div>
+
+      {/* Chart Visualizations */}
+      <ChartVisualizations categoryScores={categoryScores} overallScore={score} />
 
       {/* Category Breakdown */}
       <div className="space-y-4">
@@ -519,7 +583,7 @@ export default function ResultsPage() {
                 <span className="text-sm text-gray-500">({resource.percentage}%)</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {resource.items.map((item: any, idx: number) => (
+                {resource.items.map((item: ResourceItem, idx: number) => (
                   <a
                     key={idx}
                     href={item.url}

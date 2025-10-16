@@ -1,5 +1,6 @@
 import React from "react";
 import { SignedIn, SignedOut, RedirectToSignIn, UserButton } from "@clerk/nextjs";
+import { ElevenLabsWidget } from "@/components/ElevenLabsWidget";
 
 export default function DashboardLayout({
   children,
@@ -35,6 +36,7 @@ export default function DashboardLayout({
               <div className="w-full max-w-6xl mx-auto p-6 space-y-6">{children}</div>
             </main>
           </div>
+          <ElevenLabsWidget />
         </div>
       </SignedIn>
     </>

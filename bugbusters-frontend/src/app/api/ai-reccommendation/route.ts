@@ -1,6 +1,6 @@
-// src/app/api/ai-recommendations/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { saveQuestionnaireResponse, saveRecommendation } from '@/lib/database';
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { score, level, categoryScores, weakest } = await req.json();
+    const { score, level, categoryScores } = await req.json();
 
     // Construct the AI prompt
     const prompt = constructPrompt(score, level, categoryScores);
@@ -49,8 +49,7 @@ export async function POST(req: NextRequest) {
     // Parse the recommendations into structured format
     const parsedRecommendations = parseRecommendations(recommendations);
 
-    // TODO: Store recommendations in Supabase
-    // await storeRecommendations(userId, parsedRecommendations, score, level);
+    await storeRecommendations(userId, parsedRecommendations, score, level);
 
     return NextResponse.json({
       success: true,
@@ -67,7 +66,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function constructPrompt(score: number, level: string, categoryScores: any[]): string {
+type CategoryScore = {
+  name: string;
+  percentage: number;
+};
+
+function constructPrompt(score: number, level: string, categoryScores: CategoryScore[]): string {
   const categoryBreakdown = categoryScores
     .map(cat => `- ${cat.name}: ${cat.percentage}%`)
     .join('\n');
@@ -119,24 +123,30 @@ function parseRecommendations(text: string): string[] {
   return recommendations.slice(0, 5); // Return max 5 recommendations
 }
 
-// Function to store recommendations in database (implement with Supabase)
 async function storeRecommendations(
   userId: string,
   recommendations: string[],
   score: number,
   level: string
 ) {
-  // TODO: Implement Supabase storage
-  // Example structure:
-  /*
-  const { data, error } = await supabase
-    .from('ai_recommendations')
-    .insert({
-      user_id: userId,
-      recommendations: recommendations,
-      score: score,
-      level: level,
-      created_at: new Date().toISOString()
-    });
-  */
+  try {
+    const stage: 'Idea' | 'Research' | 'Planning' | 'Launch' | 'Scaling' = 
+      level === 'low' ? 'Idea' : 
+      level === 'medium' ? 'Planning' : 'Scaling';
+
+    const responseId = await saveQuestionnaireResponse(
+      userId, 
+      { level, timestamp: new Date().toISOString() }, 
+      score, 
+      stage
+    );
+
+    if (responseId) {
+      for (const recommendation of recommendations) {
+        await saveRecommendation(responseId, recommendation);
+      }
+    }
+  } catch (error) {
+    console.error('Error storing recommendations:', error);
+  }
 }

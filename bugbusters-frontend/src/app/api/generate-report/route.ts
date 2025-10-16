@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await req.json();
-    const { score, level, categoryScores, roadmap, strongest, weakest, answers } = data;
+    const { score, level, categoryScores, roadmap, strongest, weakest } = data;
 
     // Generate PDF content using a library like jsPDF or pdfmake
     // For now, we'll create a simple HTML-based PDF
@@ -34,11 +34,23 @@ export async function POST(req: NextRequest) {
   }
 }
 
+type CategoryScore = {
+  name: string;
+  icon: string;
+  percentage: number;
+};
+
+type Roadmap = {
+  quickWin: string;
+  nextMilestone: string;
+  longTerm: string;
+};
+
 function generatePDFHTML(
   score: number,
   level: string,
-  categoryScores: any[],
-  roadmap: any,
+  categoryScores: CategoryScore[],
+  roadmap: Roadmap,
   strongest: string,
   weakest: string
 ) {
