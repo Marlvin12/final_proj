@@ -6,6 +6,8 @@ import { useAuth } from "@clerk/nextjs";
 import { ChartVisualizations } from "@/components/ChartVisualizations";
 import { VoiceAdvice } from "@/components/VoiceAdvice";
 import { saveQuestionnaireResponse } from "@/lib/database";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 function computeScore(params: URLSearchParams): { score: number; level: "low" | "medium" | "high" } {
   let total = 0;
@@ -374,32 +376,174 @@ export default function ResultsPage() {
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      // Call API to generate PDF
-      const response = await fetch('/api/generate-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          score,
-          level,
-          categoryScores,
-          roadmap,
-          strongest: strongest.name,
-          weakest: weakest.name,
-          answers: Object.fromEntries(params.entries())
-        })
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      let yPosition = 20;
+
+      doc.setFillColor(16, 185, 129);
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Entrepreneurial Hub', pageWidth / 2, 15, { align: 'center' });
+      
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Business Readiness Assessment Report', pageWidth / 2, 25, { align: 'center' });
+      
+      doc.setFontSize(10);
+      doc.text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), pageWidth / 2, 33, { align: 'center' });
+
+      yPosition = 50;
+      doc.setTextColor(0, 0, 0);
+
+      doc.setFillColor(240, 253, 244);
+      doc.roundedRect(15, yPosition, pageWidth - 30, 40, 3, 3, 'F');
+      doc.setDrawColor(16, 185, 129);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(15, yPosition, pageWidth - 30, 40, 3, 3, 'S');
+
+      doc.setFontSize(16);
+      doc.setTextColor(16, 185, 129);
+      doc.text('Overall Readiness Score', pageWidth / 2, yPosition + 12, { align: 'center' });
+      
+      doc.setFontSize(36);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${score}%`, pageWidth / 2, yPosition + 28, { align: 'center' });
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      const levelText = level === 'high' ? 'Scaling Founder' : level === 'medium' ? 'Growing Entrepreneur' : 'Early Stage Innovator';
+      doc.text(levelText, pageWidth / 2, yPosition + 36, { align: 'center' });
+
+      yPosition = 100;
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(16, 185, 129);
+      doc.text('Key Insight', 15, yPosition);
+      
+      yPosition += 8;
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      const insightText = `Your strongest area is ${strongest.name}, while ${weakest.name} needs the most attention. Focus on improving your weaker categories to build a well-rounded business foundation.`;
+      const splitInsight = doc.splitTextToSize(insightText, pageWidth - 30);
+      doc.text(splitInsight, 15, yPosition);
+
+      yPosition += splitInsight.length * 6 + 10;
+
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(16, 185, 129);
+      doc.text('Your Personalized Action Roadmap', 15, yPosition);
+      
+      yPosition += 10;
+
+      const roadmapItems = [
+        { title: 'Quick Win (This Week)', content: roadmap.quickWin, color: [16, 185, 129] },
+        { title: 'Next Milestone (Next 3 Months)', content: roadmap.nextMilestone, color: [59, 130, 246] },
+        { title: 'Long-Term Goal (6-12 Months)', content: roadmap.longTerm, color: [139, 92, 246] }
+      ];
+
+      roadmapItems.forEach((item) => {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFillColor(item.color[0], item.color[1], item.color[2], 0.1);
+        doc.rect(15, yPosition, 4, 20, 'F');
+        
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(item.color[0], item.color[1], item.color[2]);
+        doc.text(item.title, 22, yPosition + 6);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        const splitContent = doc.splitTextToSize(item.content, pageWidth - 35);
+        doc.text(splitContent, 22, yPosition + 12);
+        
+        yPosition += Math.max(20, splitContent.length * 5 + 10);
       });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `business-readiness-report-${Date.now()}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+      if (yPosition > pageHeight - 60) {
+        doc.addPage();
+        yPosition = 20;
       }
+
+      yPosition += 10;
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(16, 185, 129);
+      doc.text('Category Breakdown', 15, yPosition);
+      
+      yPosition += 8;
+
+      const tableData = categoryScores.map(cat => [
+        cat.name,
+        `${cat.percentage}%`
+      ]);
+
+      interface JsPDFWithAutoTable extends jsPDF {
+        autoTable: (options: {
+          startY?: number;
+          head?: string[][];
+          body?: string[][];
+          theme?: string;
+          headStyles?: Record<string, unknown>;
+          styles?: Record<string, unknown>;
+          alternateRowStyles?: Record<string, unknown>;
+        }) => jsPDF;
+        lastAutoTable: {
+          finalY: number;
+        };
+      }
+
+      (doc as JsPDFWithAutoTable).autoTable({
+        startY: yPosition,
+        head: [['Category', 'Score']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [16, 185, 129],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        styles: {
+          fontSize: 10,
+          cellPadding: 5
+        },
+        alternateRowStyles: {
+          fillColor: [249, 250, 251]
+        }
+      });
+
+      const finalY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
+
+      if (finalY > pageHeight - 30) {
+        doc.addPage();
+        doc.setFillColor(16, 185, 129);
+        doc.rect(0, pageHeight - 25, pageWidth, 25, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.text('Entrepreneurial Hub - Jackson State University', pageWidth / 2, pageHeight - 15, { align: 'center' });
+        doc.setFontSize(8);
+        doc.text('Business Assessment Platform | Empowering entrepreneurs with AI-powered insights', pageWidth / 2, pageHeight - 8, { align: 'center' });
+      } else {
+        doc.setFillColor(16, 185, 129);
+        doc.rect(0, pageHeight - 25, pageWidth, 25, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.text('Entrepreneurial Hub - Jackson State University', pageWidth / 2, pageHeight - 15, { align: 'center' });
+        doc.setFontSize(8);
+        doc.text('Business Assessment Platform | Empowering entrepreneurs with AI-powered insights', pageWidth / 2, pageHeight - 8, { align: 'center' });
+      }
+
+      doc.save(`business-readiness-report-${Date.now()}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
