@@ -1,17 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "@clerk-publishable-key",
-    "CLERK_SECRET_KEY": "@clerk-secret-key",
-    "OPENAI_API_KEY": "@openai-api-key",
-    "ELEVEN_LABS_API_KEY": "@eleven-labs-api-key",
-    "ELEVEN_LABS_VOICE_ID": "@eleven-labs-voice-id"
-  }
+  "installCommand": "npm install"
 }
 
