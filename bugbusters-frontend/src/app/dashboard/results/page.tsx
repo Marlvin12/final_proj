@@ -5,9 +5,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { ChartVisualizations } from "@/components/ChartVisualizations";
 import { VoiceAdvice } from "@/components/VoiceAdvice";
-import { saveQuestionnaireResponse } from "@/lib/database";
+import { saveQuestionnaireResponse, getUserQuestionnaireResponses, type QuestionnaireResponse } from "@/lib/database";
 import jsPDF from 'jspdf';
-import { Share2, Twitter, Linkedin, Facebook, Image as ImageIcon, Check, Copy } from "lucide-react";
+import { Share2, Twitter, Linkedin, Facebook, Image as ImageIcon, Check, Copy, History, Calendar, TrendingUp } from "lucide-react";
 
 function computeScore(params: URLSearchParams): { score: number; level: "low" | "medium" | "high" } {
   let total = 0;
@@ -342,6 +342,9 @@ export default function ResultsPage() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [isExportingImage, setIsExportingImage] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'current' | 'history'>('current');
+  const [assessmentHistory, setAssessmentHistory] = useState<QuestionnaireResponse[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const { score, level } = useMemo(() => computeScore(params), [params]);
@@ -358,6 +361,34 @@ export default function ResultsPage() {
     });
     return new URLSearchParams(answers).toString();
   }, [params]);
+
+  // Load assessment history when history tab is active
+  useEffect(() => {
+    const loadHistory = async () => {
+      if (activeTab === 'history' && userId && assessmentHistory.length === 0 && !isLoadingHistory) {
+        setIsLoadingHistory(true);
+        try {
+          const history = await getUserQuestionnaireResponses(userId);
+          setAssessmentHistory(history);
+        } catch (error) {
+          console.error('Error loading assessment history:', error);
+        } finally {
+          setIsLoadingHistory(false);
+        }
+      }
+    };
+    loadHistory();
+  }, [activeTab, userId, assessmentHistory.length, isLoadingHistory]);
+
+  // Convert saved answers to URLSearchParams for viewing
+  const loadAssessmentResults = (response: QuestionnaireResponse) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(response.answers).forEach(([key, value]) => {
+      searchParams.set(key, String(value));
+    });
+    router.push(`/dashboard/results?${searchParams.toString()}`);
+    setActiveTab('current');
+  };
 
   useEffect(() => {
     const saveAssessment = async () => {
@@ -982,11 +1013,13 @@ export default function ResultsPage() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Assessment Results</h1>
           <p className="text-gray-600">
-            Your current business readiness score and next steps.
+            {activeTab === 'current' 
+              ? 'Your current business readiness score and next steps.'
+              : 'View all your past assessments and track your progress over time.'}
             {isSaving && (
               <span className="ml-2 text-emerald-600 font-medium">Saving...</span>
             )}
@@ -994,6 +1027,36 @@ export default function ResultsPage() {
               <span className="ml-2 text-emerald-600 font-medium">✓ Saved</span>
             )}
           </p>
+        </div>
+        
+        {/* Tabs */}
+        <div className="flex gap-2 bg-white/50 rounded-xl p-1 border border-white/30">
+          <button
+            onClick={() => setActiveTab('current')}
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
+              activeTab === 'current'
+                ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-lg'
+                : 'text-gray-700 hover:bg-white/70'
+            }`}
+          >
+            Current Results
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+              activeTab === 'history'
+                ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-lg'
+                : 'text-gray-700 hover:bg-white/70'
+            }`}
+          >
+            <History className="w-4 h-4" />
+            Assessment History
+            {assessmentHistory.length > 0 && (
+              <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs">
+                {assessmentHistory.length}
+              </span>
+            )}
+          </button>
         </div>
         <div className="flex gap-3 flex-wrap">
           <button
@@ -1036,6 +1099,9 @@ export default function ResultsPage() {
         </div>
       </div>
 
+      {/* Current Results Tab */}
+      {activeTab === 'current' && (
+        <>
       {/* Score Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="glass-card rounded-2xl border border-white/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
@@ -1212,6 +1278,152 @@ export default function ResultsPage() {
           ))}
         </div>
       </div>
+        </>
+      )}
+
+      {/* Assessment History Tab */}
+      {activeTab === 'history' && (
+        <div className="space-y-6">
+          {isLoadingHistory ? (
+            <div className="glass-card rounded-2xl p-12 shadow-xl border border-white/50 text-center">
+              <svg className="animate-spin h-8 w-8 text-emerald-600 mx-auto mb-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <p className="text-gray-600">Loading your assessment history...</p>
+            </div>
+          ) : assessmentHistory.length === 0 ? (
+            <div className="glass-card rounded-2xl p-12 shadow-xl border border-white/50 text-center">
+              <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No Assessment History</h3>
+              <p className="text-gray-600 mb-6">You haven&apos;t completed any assessments yet. Take your first assessment to see your results here!</p>
+              <button
+                onClick={() => router.push("/dashboard/questions")}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+              >
+                Start Assessment
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="glass-card rounded-2xl p-6 shadow-xl border border-white/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-12 w-12 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">Assessment History</h2>
+                      <p className="text-sm text-gray-600">Track your progress over time</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-emerald-600">{assessmentHistory.length}</div>
+                    <div className="text-xs text-gray-600">Total Assessments</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {assessmentHistory.map((assessment, index) => {
+                  const assessmentDate = assessment.created_at 
+                    ? new Date(assessment.created_at).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : 'Unknown date';
+                  
+                  const assessmentLevel = assessment.score < 40 ? 'low' : assessment.score < 70 ? 'medium' : 'high';
+                  const levelLabel = assessmentLevel === 'high' ? 'Scaling Founder' : assessmentLevel === 'medium' ? 'Growing Entrepreneur' : 'Early Stage Innovator';
+                  
+                  const isLatest = index === 0;
+                  
+                  return (
+                    <div
+                      key={assessment.id || index}
+                      className={`glass-card rounded-2xl p-6 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-500 cursor-pointer group ${
+                        isLatest ? 'ring-2 ring-emerald-500/50' : ''
+                      }`}
+                      onClick={() => loadAssessmentResults(assessment)}
+                    >
+                      {isLatest && (
+                        <div className="absolute top-4 right-4 px-2 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full">
+                          Latest
+                        </div>
+                      )}
+                      
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Calendar className="w-4 h-4 text-gray-500" />
+                            <span className="text-xs text-gray-600">{assessmentDate}</span>
+                          </div>
+                          <div className="text-3xl font-bold text-emerald-600 mb-1">{assessment.score}%</div>
+                          <div className="text-sm font-semibold text-gray-700">{levelLabel}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-gray-500 mb-1">Stage</div>
+                          <div className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
+                            {assessment.stage}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-600">View Details</span>
+                          <svg className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Progress Summary */}
+              {assessmentHistory.length > 1 && (
+                <div className="glass-card rounded-2xl p-6 shadow-xl border border-white/50">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Progress Summary</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">First Assessment</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {assessmentHistory[assessmentHistory.length - 1]?.score}%
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Latest Assessment</span>
+                      <span className="text-sm font-semibold text-emerald-600">
+                        {assessmentHistory[0]?.score}%
+                      </span>
+                    </div>
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold text-gray-900">Improvement</span>
+                        <span className={`text-sm font-bold ${
+                          (assessmentHistory[0]?.score || 0) > (assessmentHistory[assessmentHistory.length - 1]?.score || 0)
+                            ? 'text-emerald-600'
+                            : (assessmentHistory[0]?.score || 0) < (assessmentHistory[assessmentHistory.length - 1]?.score || 0)
+                            ? 'text-red-600'
+                            : 'text-gray-600'
+                        }`}>
+                          {((assessmentHistory[0]?.score || 0) - (assessmentHistory[assessmentHistory.length - 1]?.score || 0)) > 0 ? '+' : ''}
+                          {(assessmentHistory[0]?.score || 0) - (assessmentHistory[assessmentHistory.length - 1]?.score || 0)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -52,9 +52,27 @@ export async function POST(req: NextRequest) {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Eleven Labs API error:', errorText);
-      throw new Error('Failed to generate voice');
+      let errorMessage = 'Failed to generate voice';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.detail?.message || errorData.message || errorMessage;
+        
+        // Provide more specific error messages based on status
+        if (response.status === 401) {
+          errorMessage = 'Invalid Eleven Labs API key. Please check your configuration.';
+        } else if (response.status === 429) {
+          errorMessage = 'Rate limit exceeded. Please try again later.';
+        } else if (response.status === 400) {
+          errorMessage = 'Invalid request. Please check the text input.';
+        }
+      } catch {
+        const errorText = await response.text();
+        console.error('Eleven Labs API error:', errorText);
+        if (response.status === 401) {
+          errorMessage = 'Invalid Eleven Labs API key. Please check your configuration.';
+        }
+      }
+      throw new Error(errorMessage);
     }
 
     const audioBuffer = await response.arrayBuffer();
