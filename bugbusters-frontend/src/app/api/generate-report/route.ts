@@ -205,7 +205,7 @@ function generatePDFHTML(
   </div>
 
   <div class="insight-box">
-    <strong>💡 Key Insight:</strong> Your strongest area is <strong>${strongest}</strong>, 
+    <strong>Key Insight:</strong> Your strongest area is <strong>${strongest}</strong>, 
     while <strong>${weakest}</strong> needs the most attention. Focus on improving your 
     weaker categories to build a well-rounded business foundation.
   </div>
@@ -214,23 +214,23 @@ function generatePDFHTML(
     <div class="section-title"> Your Personalized Action Roadmap</div>
     
     <div class="roadmap-item" style="border-left-color: #10b981;">
-      <div class="roadmap-title" style="color: #10b981;"> Quick Win (This Week)</div>
+      <div class="roadmap-title" style="color: #10b981;">Quick Win (This Week)</div>
       <p>${roadmap.quickWin}</p>
     </div>
     
     <div class="roadmap-item" style="border-left-color: #3b82f6; background: #eff6ff;">
-      <div class="roadmap-title" style="color: #3b82f6;"> Next Milestone (Next 3 Months)</div>
+      <div class="roadmap-title" style="color: #3b82f6;">Next Milestone (Next 3 Months)</div>
       <p>${roadmap.nextMilestone}</p>
     </div>
     
     <div class="roadmap-item" style="border-left-color: #8b5cf6; background: #f5f3ff;">
-      <div class="roadmap-title" style="color: #8b5cf6;"> Long-Term Goal (6-12 Months)</div>
+      <div class="roadmap-title" style="color: #8b5cf6;">Long-Term Goal (6-12 Months)</div>
       <p>${roadmap.longTerm}</p>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">📊 Category Breakdown</div>
+    <div class="section-title">Category Breakdown</div>
     ${categoryScores.map(cat => {
       const color = cat.percentage >= 80 ? '#10b981' : 
                    cat.percentage >= 60 ? '#3b82f6' : 

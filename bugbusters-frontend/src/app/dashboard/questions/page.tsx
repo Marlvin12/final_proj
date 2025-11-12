@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 type Question = {
@@ -22,9 +22,23 @@ const QUESTIONS: Question[] = [
   { id: "risk_mgmt", label: "Rate risk management readiness (1-5)", type: "scale" },
 ];
 
+const STORAGE_KEY = 'assessment_answers';
+
 export default function BusinessQuestionsPage() {
   const router = useRouter();
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          return {};
+        }
+      }
+    }
+    return {};
+  });
   const [error, setError] = useState<string | null>(null);
 
   const allAnswered = useMemo(() => QUESTIONS.every((q) => answers[q.id]?.length), [answers]);
@@ -34,8 +48,20 @@ export default function BusinessQuestionsPage() {
     return Math.round((answered / QUESTIONS.length) * 100);
   }, [answers]);
 
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+    }
+  }, [answers]);
+
   function onChange(id: string, value: string) {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
+    setAnswers((prev) => {
+      const updated = { ...prev, [id]: value };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      }
+      return updated;
+    });
   }
 
   function validate(): string | null {
@@ -59,6 +85,11 @@ export default function BusinessQuestionsPage() {
       return;
     }
     setError(null);
+    
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    
     const params = new URLSearchParams(answers);
     router.push(`/dashboard/results?${params.toString()}`);
   }
@@ -92,7 +123,7 @@ export default function BusinessQuestionsPage() {
           return (
             <div 
               key={q.id} 
-              className="group space-y-3 bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-emerald-200 animate-scale-in"
+              className="group space-y-4 glass-card p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-emerald-300/50 animate-scale-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="flex items-start gap-3">
@@ -111,7 +142,7 @@ export default function BusinessQuestionsPage() {
                 <div className="ml-11">
                   <select
                     id={q.id}
-                    className="w-full max-w-md rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-emerald-300 shadow-sm"
+                    className="w-full max-w-md rounded-xl border-2 border-gray-200 px-5 py-3.5 text-gray-900 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-500 hover:border-emerald-300 hover:bg-white shadow-md hover:shadow-lg font-medium"
                     value={answers[q.id] ?? ""}
                     onChange={(e) => onChange(q.id, e.target.value)}
                     required
@@ -131,7 +162,7 @@ export default function BusinessQuestionsPage() {
                     min={1}
                     max={5}
                     step={1}
-                    className="w-full max-w-md h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                    className="w-full max-w-md h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-full appearance-none cursor-pointer accent-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all duration-300"
                     value={answers[q.id] || "3"}
                     onChange={(e) => onChange(q.id, e.target.value)}
                     required
@@ -144,9 +175,9 @@ export default function BusinessQuestionsPage() {
                     <span className={answers[q.id] === "5" ? "text-emerald-600 font-semibold" : ""}>5</span>
                   </div>
                   <div className="text-center max-w-md">
-                    <span className="inline-block bg-emerald-100 text-emerald-800 px-4 py-2 rounded-lg font-bold text-lg">
-                      {answers[q.id] || "3"}
-                    </span>
+                  <span className="inline-block bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-800 px-6 py-3 rounded-xl font-bold text-xl shadow-md border border-emerald-200/50">
+                    {answers[q.id] || "3"}
+                  </span>
                   </div>
                 </div>
               ) : (
@@ -154,7 +185,7 @@ export default function BusinessQuestionsPage() {
                   <input
                     id={q.id}
                     type="text"
-                    className="w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-emerald-300 shadow-sm"
+                    className="w-full rounded-xl border-2 border-gray-200 px-5 py-3.5 text-gray-900 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-500 hover:border-emerald-300 hover:bg-white shadow-md hover:shadow-lg font-medium"
                     value={answers[q.id] ?? ""}
                     onChange={(e) => onChange(q.id, e.target.value)}
                     required
@@ -174,14 +205,16 @@ export default function BusinessQuestionsPage() {
         <button
           type="submit"
           disabled={!allAnswered}
-          className="group relative w-full rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 overflow-hidden"
+          className="group relative w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-blue-600 px-8 py-5 text-lg font-bold text-white shadow-2xl hover:shadow-[0_20px_50px_-12px_rgba(16,185,129,0.4)] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-500 transform hover:scale-[1.01] hover:-translate-y-1.5 overflow-hidden disabled:hover:scale-100 disabled:hover:translate-y-0"
         >
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative flex items-center justify-center gap-2">
+          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+          <span className="relative flex items-center justify-center gap-3">
             {allAnswered ? (
               <>
                 Get Assessment
-                <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </>
             ) : (
               "Answer all questions to continue"

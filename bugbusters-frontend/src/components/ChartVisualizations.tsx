@@ -267,7 +267,7 @@ export function DoughnutChart({ categoryScores }: ChartVisualizationsProps) {
 }
 
 export function ChartVisualizations({ categoryScores, overallScore }: ChartVisualizationsProps) {
-  const [selectedChart, setSelectedChart] = React.useState<'bar' | 'radar' | 'doughnut'>('bar');
+  const [selectedChart, setSelectedChart] = React.useState<'bar' | 'radar' | 'doughnut'>('radar');
 
   return (
     <div className="space-y-4">

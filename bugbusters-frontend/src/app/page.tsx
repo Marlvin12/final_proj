@@ -48,27 +48,27 @@ export default function Home() {
                 venture with confidence.
               </p>
               
-              <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 animate-fade-in animation-delay-400 px-4">
+              <div className="mt-12 sm:mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 animate-fade-in animation-delay-400 px-4">
                 <Link
                   href="/dashboard"
-                  className="w-full sm:w-auto group relative rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden text-center animate-glow"
+                  className="w-full sm:w-auto group relative rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-blue-600 px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-bold text-white shadow-2xl hover:shadow-[0_20px_50px_-12px_rgba(16,185,129,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-1.5 overflow-hidden text-center"
                 >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
                   <span className="relative flex items-center justify-center gap-3">
                     Start Assessment
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
                 </Link>
                 <Link
                   href="/about"
-                  className="w-full sm:w-auto glass-card rounded-2xl px-8 py-4 text-base sm:text-lg font-semibold text-gray-900 hover:text-emerald-600 transition-all duration-300 group text-center shadow-lg hover:shadow-xl"
+                  className="w-full sm:w-auto glass-card rounded-2xl px-10 py-5 text-base sm:text-lg font-bold text-gray-900 hover:text-emerald-600 transition-all duration-500 group text-center shadow-xl hover:shadow-2xl hover:-translate-y-1"
                 >
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-2.5">
                     Learn more
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
                 </Link>
@@ -94,12 +94,12 @@ export default function Home() {
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
             <dl className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
-              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-8 rounded-3xl transition-all duration-500 border border-white/40 shadow-xl animate-fade-in">
-                <dt className="flex items-center gap-x-3 text-lg font-bold leading-7 text-gray-900 mb-4">
-                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg animate-glow">
-                    <Sparkles className="h-8 w-8 text-white" />
+              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-10 rounded-3xl transition-all duration-500 border border-white/50 shadow-xl hover:shadow-2xl animate-fade-in">
+                <dt className="flex items-center gap-x-4 text-xl font-bold leading-7 text-gray-900 mb-5">
+                  <div className="h-20 w-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-2xl">
+                    <Sparkles className="h-10 w-10 text-white drop-shadow-lg" />
                   </div>
-                  <span className="group-hover:text-emerald-600 transition-colors duration-300">AI-Powered Questions</span>
+                  <span className="group-hover:text-emerald-600 transition-colors duration-500">AI-Powered Questions</span>
                 </dt>
                 <dd className="flex flex-auto flex-col text-base leading-relaxed text-gray-600">
                   <p className="flex-auto">
@@ -108,12 +108,12 @@ export default function Home() {
                   </p>
                 </dd>
               </div>
-              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-8 rounded-3xl transition-all duration-500 border border-white/40 shadow-xl animate-fade-in animation-delay-200">
-                <dt className="flex items-center gap-x-3 text-lg font-bold leading-7 text-gray-900 mb-4">
-                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg animate-glow">
-                    <BarChart3 className="h-8 w-8 text-white" />
+              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-10 rounded-3xl transition-all duration-500 border border-white/50 shadow-xl hover:shadow-2xl animate-fade-in animation-delay-200">
+                <dt className="flex items-center gap-x-4 text-xl font-bold leading-7 text-gray-900 mb-5">
+                  <div className="h-20 w-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-2xl">
+                    <BarChart3 className="h-10 w-10 text-white drop-shadow-lg" />
                   </div>
-                  <span className="group-hover:text-blue-600 transition-colors duration-300">Smart Scoring System</span>
+                  <span className="group-hover:text-blue-600 transition-colors duration-500">Smart Scoring System</span>
                 </dt>
                 <dd className="flex flex-auto flex-col text-base leading-relaxed text-gray-600">
                   <p className="flex-auto">
@@ -122,12 +122,12 @@ export default function Home() {
                   </p>
                 </dd>
               </div>
-              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-8 rounded-3xl transition-all duration-500 border border-white/40 shadow-xl animate-fade-in animation-delay-400">
-                <dt className="flex items-center gap-x-3 text-lg font-bold leading-7 text-gray-900 mb-4">
-                  <div className="h-16 w-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg animate-glow">
-                    <TrendingUp className="h-8 w-8 text-white" />
+              <div className="flex flex-col group perspective-card glass-card hover:glass-hover p-10 rounded-3xl transition-all duration-500 border border-white/50 shadow-xl hover:shadow-2xl animate-fade-in animation-delay-400">
+                <dt className="flex items-center gap-x-4 text-xl font-bold leading-7 text-gray-900 mb-5">
+                  <div className="h-20 w-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-2xl">
+                    <TrendingUp className="h-10 w-10 text-white drop-shadow-lg" />
                   </div>
-                  <span className="group-hover:text-purple-600 transition-colors duration-300">Progress Tracking</span>
+                  <span className="group-hover:text-purple-600 transition-colors duration-500">Progress Tracking</span>
                 </dt>
                 <dd className="flex flex-auto flex-col text-base leading-relaxed text-gray-600">
                   <p className="flex-auto">
@@ -223,27 +223,27 @@ export default function Home() {
                   Join students and entrepreneurs who are using Entrepreneurial Hub to evaluate 
                   and improve their business strategies with AI-powered insights and expert guidance.
                 </p>
-                <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 animate-fade-in-up animation-delay-400">
+                <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 animate-fade-in-up animation-delay-400">
                   <Link
                     href="/dashboard"
-                    className="w-full sm:w-auto group relative rounded-2xl bg-white px-10 py-5 text-lg font-semibold text-emerald-600 shadow-2xl hover:shadow-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 overflow-hidden"
+                    className="w-full sm:w-auto group relative rounded-2xl bg-white px-12 py-6 text-lg font-bold text-emerald-600 shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(255,255,255,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-1.5 overflow-hidden"
                   >
-                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
                     <span className="relative flex items-center justify-center gap-3">
                       Get Started Now
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     </span>
                   </Link>
                   <Link
                     href="/contact"
-                    className="w-full sm:w-auto glass rounded-2xl px-10 py-5 text-lg font-semibold text-white hover:bg-white/20 transition-all duration-300 group shadow-lg"
+                    className="w-full sm:w-auto glass rounded-2xl px-12 py-6 text-lg font-bold text-white hover:bg-white/25 transition-all duration-500 group shadow-xl hover:shadow-2xl hover:-translate-y-1"
                   >
-                    <span className="flex items-center justify-center gap-2">
+                    <span className="flex items-center justify-center gap-2.5">
                       Contact Us
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     </span>
                   </Link>

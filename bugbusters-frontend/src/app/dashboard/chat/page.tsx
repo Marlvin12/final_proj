@@ -113,10 +113,10 @@ export default function ChatPage() {
                   {msg.role === "user" ? "You" : "AI"}
                 </div>
                 <div
-                  className={`rounded-3xl px-6 py-4 text-base leading-relaxed shadow-lg hover:shadow-xl transition-all duration-300 ${
+                  className={`rounded-3xl px-7 py-5 text-base leading-relaxed shadow-xl hover:shadow-2xl transition-all duration-500 ${
                     msg.role === "user"
-                      ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white"
-                      : "glass-card border border-white/40 text-gray-800"
+                      ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white"
+                      : "glass-card border border-white/50 text-gray-800"
                   }`}
                 >
                   {msg.content.split("\n\n").map((paragraph, i) => (
@@ -148,13 +148,13 @@ export default function ChatPage() {
 
         <div className="relative p-6">
           <div className="absolute inset-0 bg-gradient-to-t from-gray-50/50 to-transparent"></div>
-          <div className="relative flex gap-3">
-            <div className="flex-1 glass-card rounded-3xl border border-white/40 shadow-lg overflow-hidden">
+            <div className="relative flex gap-4">
+            <div className="flex-1 glass-card rounded-3xl border border-white/50 shadow-xl hover:shadow-2xl overflow-hidden transition-all duration-500">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me anything about your business..."
-                className="w-full px-6 py-4 text-base text-gray-900 bg-transparent placeholder-gray-500 focus:outline-none"
+                className="w-full px-7 py-5 text-base text-gray-900 bg-transparent placeholder-gray-400 focus:outline-none font-medium"
                 onKeyDown={(e) =>
                   e.key === "Enter" && !e.shiftKey && handleSend()
                 }
@@ -163,11 +163,11 @@ export default function ChatPage() {
             <button
               onClick={handleSend}
               disabled={isLoading}
-              className="group glass-card border border-white/40 rounded-3xl h-14 w-14 flex items-center justify-center disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110 disabled:hover:scale-100 overflow-hidden"
+              className="group glass-card border border-white/50 rounded-3xl h-16 w-16 flex items-center justify-center disabled:opacity-50 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:scale-110 hover:-translate-y-1 disabled:hover:scale-100 disabled:hover:translate-y-0 overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <svg
-                className="h-6 w-6 text-emerald-600 group-hover:text-white relative z-10 group-hover:rotate-45 transition-all duration-300"
+                className="h-7 w-7 text-emerald-600 group-hover:text-white relative z-10 group-hover:rotate-45 transition-all duration-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -175,7 +175,7 @@ export default function ChatPage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                 />
               </svg>
