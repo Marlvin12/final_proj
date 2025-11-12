@@ -208,10 +208,10 @@ export default function BusinessSupportPage() {
         widget.click();
         
         // Method 2: Try to trigger the widget's open method if available
-        if ('open' in widget && typeof (widget as any).open === 'function') {
+        if ('open' in widget && typeof (widget as { open?: () => void }).open === 'function') {
           try {
-            (widget as any).open();
-          } catch (e) {
+            (widget as { open: () => void }).open();
+          } catch {
             console.log('Open method not available');
           }
         }
@@ -234,7 +234,7 @@ export default function BusinessSupportPage() {
                 clickable.click();
               }
             }
-          } catch (e) {
+          } catch {
             // Shadow DOM access might be restricted
             console.log('Shadow DOM access restricted');
           }
@@ -283,7 +283,7 @@ export default function BusinessSupportPage() {
               </h3>
               
               <p className="text-gray-600 mb-6">
-                The AI voice assistant widget should now be open in the bottom-right corner. If you don't see it, look for the voice icon and click it to start your conversation!
+                The AI voice assistant widget should now be open in the bottom-right corner. If you don&apos;t see it, look for the voice icon and click it to start your conversation!
               </p>
               
               <div className="glass rounded-2xl p-6 mb-6 border border-emerald-400/40">
