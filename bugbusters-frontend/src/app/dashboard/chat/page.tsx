@@ -113,6 +113,7 @@ export default function ChatPage() {
                   {msg.role === "user" ? "You" : "AI"}
                 </div>
                 <div
+                  data-testid="message"
                   className={`rounded-3xl px-7 py-5 text-base leading-relaxed shadow-xl hover:shadow-2xl transition-all duration-500 ${
                     msg.role === "user"
                       ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white"
@@ -151,6 +152,7 @@ export default function ChatPage() {
             <div className="relative flex gap-4">
             <div className="flex-1 glass-card rounded-3xl border border-white/50 shadow-xl hover:shadow-2xl overflow-hidden transition-all duration-500">
               <input
+                data-testid="chat-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me anything about your business..."
@@ -161,6 +163,7 @@ export default function ChatPage() {
               />
             </div>
             <button
+              data-testid="send-button"
               onClick={handleSend}
               disabled={isLoading}
               className="group glass-card border border-white/50 rounded-3xl h-16 w-16 flex items-center justify-center disabled:opacity-50 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:scale-110 hover:-translate-y-1 disabled:hover:scale-100 disabled:hover:translate-y-0 overflow-hidden"

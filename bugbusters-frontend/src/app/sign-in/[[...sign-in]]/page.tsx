@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { SignIn } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, GraduationCap } from "lucide-react";
 
 export default function SignInPage() {
-  const router = useRouter();
   const [authMethod, setAuthMethod] = useState<"clerk" | "jnumber">("clerk");
   const [jNumber, setJNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -39,8 +37,7 @@ export default function SignInPage() {
       let data;
       try {
         data = await response.json();
-      } catch (parseError) {
-        console.error("Failed to parse response:", parseError);
+      } catch {
         setError("Invalid response from server. Please try again.");
         setLoading(false);
         return;
@@ -56,9 +53,9 @@ export default function SignInPage() {
       console.log("Sign-in successful, redirecting to dashboard...");
       // Use window.location for a full page reload to ensure cookies are processed
       window.location.href = "/dashboard";
-    } catch (err: any) {
+    } catch (err) {
       console.error("Sign-in error:", err);
-      if (err.name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         setError("Request timed out. Please check your connection and try again.");
       } else {
         setError("An error occurred. Please try again.");
@@ -94,8 +91,7 @@ export default function SignInPage() {
       let data;
       try {
         data = await response.json();
-      } catch (parseError) {
-        console.error("Failed to parse response:", parseError);
+      } catch {
         setError("Invalid response from server. Please try again.");
         setLoading(false);
         return;
@@ -111,9 +107,9 @@ export default function SignInPage() {
       console.log("Sign-up successful, redirecting to dashboard...");
       // Use window.location for a full page reload to ensure cookies are processed
       window.location.href = "/dashboard";
-    } catch (err: any) {
+    } catch (err) {
       console.error("Sign-up error:", err);
-      if (err.name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         setError("Request timed out. Please check your connection and try again.");
       } else {
         setError("An error occurred. Please try again.");

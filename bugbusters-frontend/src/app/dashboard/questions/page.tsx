@@ -45,7 +45,6 @@ export default function BusinessQuestionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user: clerkUser } = useUser();
-  const [jNumberUser, setJNumberUser] = useState<any>(null);
 
   const allAnswered = useMemo(() => QUESTIONS.every((q) => answers[q.id]?.length), [answers]);
 
@@ -63,8 +62,7 @@ export default function BusinessQuestionsPage() {
   useEffect(() => {
     const checkAuth = async () => {
       if (!clerkUser) {
-        const jUser = await checkJNumberAuth();
-        setJNumberUser(jUser);
+        await checkJNumberAuth();
       }
     };
     checkAuth();
@@ -115,7 +113,7 @@ export default function BusinessQuestionsPage() {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       if (allAnswered && !isSubmitting) {
-        handleSubmit(e as any);
+        handleSubmit(e as React.FormEvent);
       }
     }
   };

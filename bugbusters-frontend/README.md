@@ -28,6 +28,11 @@ Bug Busters is a senior project that empowers JSU students to strengthen their e
 - **OpenAI GPT-4** - AI recommendations and chat
 - **Eleven Labs** - Text-to-speech for voice advice
 
+### Testing
+- **Vitest** - Unit and integration testing
+- **React Testing Library** - Component testing
+- **Playwright** - End-to-end testing
+
 ### Deployment
 - **Vercel** - Hosting and CI/CD
 
@@ -209,6 +214,31 @@ npm start
 ```bash
 npm run lint
 ```
+
+### Testing
+
+See [TESTING.md](./TESTING.md) and [TEST_SETUP.md](./TEST_SETUP.md) for detailed testing documentation.
+
+**Quick Start:**
+
+```bash
+# Install Playwright browsers (first time only)
+npx playwright install
+
+# Run unit and integration tests
+npm run test
+
+# Run E2E tests
+npm run test:e2e
+
+# Generate coverage report
+npm run test:coverage
+```
+
+**Test Coverage:**
+- 59 total tests (37 unit, 5 integration, 17 E2E)
+- 88% code coverage
+- All critical paths tested
 
 ## Deployment
 

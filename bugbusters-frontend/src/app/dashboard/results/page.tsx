@@ -1106,7 +1106,7 @@ export default function ResultsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="glass-card rounded-2xl border border-white/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
           <div className="text-sm text-gray-600 font-semibold mb-2">Readiness Score</div>
-          <div className="text-5xl font-bold text-emerald-600 text-shadow-soft">{score}%</div>
+          <div data-testid="score" className="text-5xl font-bold text-emerald-600 text-shadow-soft">{score}%</div>
         </div>
         <div className="glass-card rounded-2xl border border-white/50 p-8 shadow-xl hover:shadow-2xl transition-all duration-500">
           <div className="text-sm text-gray-600 font-semibold mb-2">Level</div>

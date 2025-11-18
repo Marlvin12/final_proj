@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { SignedIn, SignedOut, RedirectToSignIn, UserButton, useUser } from "@clerk/nextjs";
+import { RedirectToSignIn, UserButton, useUser } from "@clerk/nextjs";
 import { ElevenLabsWidget } from "@/components/ElevenLabsWidget";
 import Link from "next/link";
 import { FileText, MessageSquare, BarChart3, Target, Home, Sparkles, Menu, X, LogOut, GraduationCap } from "lucide-react";

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type CategoryScore = {
   name: string;
@@ -20,8 +20,19 @@ export function useAIRecommendations({ score, level, categoryScores, weakest }: 
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const prevDepsRef = useRef<string>('');
 
   useEffect(() => {
+    // Create a stable key from dependencies to prevent unnecessary re-fetches
+    const depsKey = `${score}-${level}-${weakest.name}-${JSON.stringify(categoryScores)}`;
+    
+    // Skip if dependencies haven't changed
+    if (prevDepsRef.current === depsKey) {
+      return;
+    }
+    
+    prevDepsRef.current = depsKey;
+
     async function fetchRecommendations() {
       setIsLoading(true);
       setError(null);
@@ -55,7 +66,7 @@ export function useAIRecommendations({ score, level, categoryScores, weakest }: 
     }
 
     fetchRecommendations();
-  }, [score, level, categoryScores, weakest]);
+  }, [score, level, categoryScores, weakest.name]);
 
   return { recommendations, isLoading, error };
 }
