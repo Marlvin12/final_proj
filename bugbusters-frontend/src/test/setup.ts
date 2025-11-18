@@ -58,7 +58,7 @@ afterAll(() => {
 });
 
 if (typeof HTMLCanvasElement !== 'undefined') {
-  // @ts-ignore - Mock canvas for testing
+  // @ts-expect-error - Mock canvas for testing
   HTMLCanvasElement.prototype.getContext = vi.fn(() => {
     return {
       fillRect: vi.fn(),
