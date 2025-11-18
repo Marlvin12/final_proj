@@ -5,13 +5,21 @@
 -- Enable Row Level Security (RLS) for all tables
 -- This ensures users can only access their own data
 
--- Users table (extends Supabase auth.users)
+-- Users table (extends Supabase auth.users for Clerk, or standalone for J#)
 CREATE TABLE IF NOT EXISTS public.users (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  clerk_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   last_login TIMESTAMP WITH TIME ZONE,
-  role TEXT DEFAULT 'user'
+  role TEXT DEFAULT 'user',
+  j_number TEXT UNIQUE,
+  password_hash TEXT,
+  auth_method TEXT DEFAULT 'clerk' CHECK (auth_method IN ('clerk', 'jnumber')),
+  CONSTRAINT users_auth_check CHECK (
+    (auth_method = 'clerk' AND clerk_id IS NOT NULL) OR
+    (auth_method = 'jnumber' AND j_number IS NOT NULL AND password_hash IS NOT NULL)
+  )
 );
 
 -- Enable RLS on users table
@@ -87,3 +95,4 @@ CREATE POLICY "System can insert recommendations" ON public.recommendations
 CREATE INDEX IF NOT EXISTS idx_questionnaire_responses_user_id ON public.questionnaire_responses(user_id);
 CREATE INDEX IF NOT EXISTS idx_questionnaire_responses_created_at ON public.questionnaire_responses(created_at);
 CREATE INDEX IF NOT EXISTS idx_recommendations_response_id ON public.recommendations(response_id);
+CREATE INDEX IF NOT EXISTS idx_users_j_number ON public.users(j_number);

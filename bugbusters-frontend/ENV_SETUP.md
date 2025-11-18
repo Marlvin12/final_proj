@@ -80,6 +80,10 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 
+# J# Authentication (JWT Secret)
+# Generate a secure random string for production (e.g., openssl rand -base64 32)
+JWT_SECRET=your-secret-key-change-in-production
+
 # OpenAI
 OPENAI_API_KEY=sk-your_key_here
 

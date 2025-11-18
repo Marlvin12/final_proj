@@ -1,11 +1,71 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import TopNavbar from "../components/TopNavbar/TopNavbar";
 import ThreeBackground from "@/components/ThreeBackground";
-import { Users, GraduationCap, MessageSquare, Link2, Package, Rocket, ArrowLeft, ArrowRight } from "lucide-react";
+import { Users, GraduationCap, MessageSquare, Link2, Package, Rocket, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 
 export default function ContactPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        setError("Invalid response from server.");
+        setLoading(false);
+        return;
+      }
+
+      if (!response.ok) {
+        setError(data.error || "Failed to send message");
+        setLoading(false);
+        return;
+      }
+
+      setSuccess(true);
+      setName("");
+      setEmail("");
+      setMessage("");
+      setLoading(false);
+      
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    } catch (err) {
+      console.error("Contact form error:", err);
+      setError("An error occurred. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (!loading && name && email && message) {
+        handleSubmit(e as any);
+      }
+    }
+  };
   return (
     <>
       <ThreeBackground variant="waves" />
@@ -123,20 +183,107 @@ export default function ContactPage() {
                   <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600">
                     <MessageSquare className="h-6 w-6 text-white" />
                   </div>
-                  Have Questions?
+                  Send Us a Message
                 </h2>
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  The best way to get help is to use our AI-powered chat assistant available in the dashboard. 
-                  It can answer questions about business strategy, entrepreneurship, and how to use the platform.
+                  Have questions or feedback? Fill out the form below and press Enter (or Cmd/Ctrl+Enter) to submit.
                 </p>
-                <Link
-                  href="/dashboard/chat"
-                  className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 overflow-hidden animate-glow"
-                >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-                  <span className="relative">Chat with AI Assistant</span>
-                  <ArrowRight className="w-5 h-5 relative group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">
+                      Your Name
+                    </label>
+                    <input
+                      id="contact-name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 rounded-xl glass border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-500"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">
+                      Your Email
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 rounded-xl glass border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-500"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-2">
+                      Your Message
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      required
+                      rows={5}
+                      className="w-full px-4 py-3 rounded-xl glass border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-500 resize-none"
+                      placeholder="Type your message here... Press Cmd/Ctrl+Enter to submit"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Press Cmd+Enter (Mac) or Ctrl+Enter (Windows) to submit
+                    </p>
+                  </div>
+
+                  {error && (
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  {success && (
+                    <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Message sent successfully! We'll get back to you soon.
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || !name || !email || !message}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="mt-6 pt-6 border-t border-white/20">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Or use our AI-powered chat assistant:
+                  </p>
+                  <Link
+                    href="/dashboard/chat"
+                    className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all duration-500 transform hover:scale-110 hover:-translate-y-1 overflow-hidden animate-glow"
+                  >
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                    <span className="relative">Chat with AI Assistant</span>
+                    <ArrowRight className="w-5 h-5 relative group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
               </div>
 
               <div className="glass-card rounded-[2.5rem] p-8 shadow-xl border border-white/40">

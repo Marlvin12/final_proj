@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { SignedIn, SignedOut, RedirectToSignIn, UserButton } from "@clerk/nextjs";
+import React, { useState, useEffect } from "react";
+import { SignedIn, SignedOut, RedirectToSignIn, UserButton, useUser } from "@clerk/nextjs";
 import { ElevenLabsWidget } from "@/components/ElevenLabsWidget";
 import Link from "next/link";
-import { FileText, MessageSquare, BarChart3, Target, Home, Sparkles, Menu, X } from "lucide-react";
+import { FileText, MessageSquare, BarChart3, Target, Home, Sparkles, Menu, X, LogOut, GraduationCap } from "lucide-react";
+import { checkJNumberAuth, signOutJNumber, JNumberUser } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface NavItem {
   label: string;
@@ -25,13 +27,51 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [jNumberUser, setJNumberUser] = useState<JNumberUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (clerkLoaded) {
+        if (!clerkUser) {
+          const jUser = await checkJNumberAuth();
+          setJNumberUser(jUser);
+        }
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, [clerkUser, clerkLoaded]);
+
+  const handleSignOut = async () => {
+    if (jNumberUser) {
+      await signOutJNumber();
+      router.push("/");
+      router.refresh();
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-emerald-50/30 to-blue-50/30">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isAuthenticated = clerkUser || jNumberUser;
+
+  if (!isAuthenticated) {
+    return <RedirectToSignIn />;
+  }
 
   return (
     <>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-      <SignedIn>
         <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-blue-50/30">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[280px] glass-card border-r border-white/20 shadow-xl">
@@ -151,9 +191,27 @@ export default function DashboardLayout({
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="glass px-4 py-2 rounded-xl border border-white/20">
-                    <UserButton />
-                  </div>
+                  {clerkUser ? (
+                    <div className="glass px-4 py-2 rounded-xl border border-white/20">
+                      <UserButton />
+                    </div>
+                  ) : jNumberUser ? (
+                    <div className="flex items-center gap-3 glass px-4 py-2 rounded-xl border border-white/20">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-5 h-5 text-emerald-600" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {jNumberUser.j_number}
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleSignOut}
+                        className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                        title="Sign out"
+                      >
+                        <LogOut className="w-4 h-4 text-gray-600" />
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </header>
@@ -163,7 +221,6 @@ export default function DashboardLayout({
           </div>
           <ElevenLabsWidget />
         </div>
-      </SignedIn>
     </>
   );
 }

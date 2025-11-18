@@ -2,6 +2,9 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { checkJNumberAuth } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 
 type Question = {
   id: string;
@@ -40,6 +43,9 @@ export default function BusinessQuestionsPage() {
     return {};
   });
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user: clerkUser } = useUser();
+  const [jNumberUser, setJNumberUser] = useState<any>(null);
 
   const allAnswered = useMemo(() => QUESTIONS.every((q) => answers[q.id]?.length), [answers]);
 
@@ -53,6 +59,16 @@ export default function BusinessQuestionsPage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
     }
   }, [answers]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!clerkUser) {
+        const jUser = await checkJNumberAuth();
+        setJNumberUser(jUser);
+      }
+    };
+    checkAuth();
+  }, [clerkUser]);
 
   function onChange(id: string, value: string) {
     setAnswers((prev) => {
@@ -85,6 +101,7 @@ export default function BusinessQuestionsPage() {
       return;
     }
     setError(null);
+    setIsSubmitting(true);
     
     if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);
@@ -93,6 +110,15 @@ export default function BusinessQuestionsPage() {
     const params = new URLSearchParams(answers);
     router.push(`/dashboard/results?${params.toString()}`);
   }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (allAnswered && !isSubmitting) {
+        handleSubmit(e as any);
+      }
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -117,12 +143,13 @@ export default function BusinessQuestionsPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-5">
         {QUESTIONS.map((q, index) => {
           const isAnswered = answers[q.id]?.length > 0;
           return (
             <div 
-              key={q.id} 
+              key={q.id}
+              data-testid="question"
               className="group space-y-4 glass-card p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-emerald-300/50 animate-scale-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
@@ -204,12 +231,18 @@ export default function BusinessQuestionsPage() {
         
         <button
           type="submit"
-          disabled={!allAnswered}
+          data-testid="submit-button"
+          disabled={!allAnswered || isSubmitting}
           className="group relative w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-blue-600 px-8 py-5 text-lg font-bold text-white shadow-2xl hover:shadow-[0_20px_50px_-12px_rgba(16,185,129,0.4)] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-500 transform hover:scale-[1.01] hover:-translate-y-1.5 overflow-hidden disabled:hover:scale-100 disabled:hover:translate-y-0"
         >
           <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           <span className="relative flex items-center justify-center gap-3">
-            {allAnswered ? (
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Processing...
+              </>
+            ) : allAnswered ? (
               <>
                 Get Assessment
                 <svg className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
