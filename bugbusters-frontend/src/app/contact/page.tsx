@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import TopNavbar from "../components/TopNavbar/TopNavbar";
 import ThreeBackground from "@/components/ThreeBackground";
-import { Users, GraduationCap, MessageSquare, Link2, Package, Rocket, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { Users, GraduationCap, MessageSquare, Link2, Package, Rocket, ArrowLeft, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -30,7 +30,7 @@ export default function ContactPage() {
       let data;
       try {
         data = await response.json();
-      } catch (parseError) {
+      } catch {
         setError("Invalid response from server.");
         setLoading(false);
         return;
@@ -62,7 +62,7 @@ export default function ContactPage() {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       if (!loading && name && email && message) {
-        handleSubmit(e as any);
+        handleSubmit(e as React.FormEvent);
       }
     }
   };
@@ -248,7 +248,7 @@ export default function ContactPage() {
                   {success && (
                     <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm flex items-center gap-2">
                       <CheckCircle className="w-5 h-5" />
-                      Message sent successfully! We'll get back to you soon.
+                      Message sent successfully! We&apos;ll get back to you soon.
                     </div>
                   )}
 

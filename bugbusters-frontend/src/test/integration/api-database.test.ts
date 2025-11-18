@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { saveQuestionnaireResponse, saveRecommendation } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
